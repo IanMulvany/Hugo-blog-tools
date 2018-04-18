@@ -16,26 +16,16 @@ logger.setLevel(logging.INFO)
 today = datetime.date.today()
 
 """
-A script to support creating yaml metadata for my blog posts
-while using Hugo as a static blog posting engine.
+A script to:
 
-Suggested workflow:
+- automatically format a hugo post in /content/posts
+- generate the full hugo site
+- commit new changes locally to git
+- push the new git commits to the remote (should go to github)
 
-create a draft post in /Users/ianm/Dropbox/blog/drafts with the name of the post as the filename, but no date in the filename.
+Usage
 
-When I feel the post is readyish then move the filename to
-partiallyattended/content/post/ with the date prepended to the blog post
-
-publish the file to medium using ByWord
-
-use this script to generate the yaml header
-add the yaml header to the file
-
-run hugo
-
-post to github
-
-Much of this could actually be automated, but for now it's a reasonable start.
+$ python3 transform_to_hugo_format.py path_to_source_post
 """
 
 class cd:
