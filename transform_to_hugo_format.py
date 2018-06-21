@@ -1,3 +1,16 @@
+"""
+A script to:
+
+- automatically format a hugo post in /content/posts
+- generate the full hugo site
+- commit new changes locally to git
+- push the new git commits to the remote (should go to github)
+
+Usage
+
+$ python3 transform_to_hugo_format.py path_to_source_post
+"""
+
 import subprocess
 import datetime
 import logging
@@ -15,18 +28,6 @@ logger.setLevel(logging.INFO)
 
 today = datetime.date.today()
 
-"""
-A script to:
-
-- automatically format a hugo post in /content/posts
-- generate the full hugo site
-- commit new changes locally to git
-- push the new git commits to the remote (should go to github)
-
-Usage
-
-$ python3 transform_to_hugo_format.py path_to_source_post
-"""
 
 class cd:
     """Context manager for changing the current working directory
