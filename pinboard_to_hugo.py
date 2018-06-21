@@ -16,7 +16,7 @@ from collections import deque
 import logging
 import configparser
 
-#TODO: parse tags for "toblog" tags, and only add those to the blog 
+#TODO: parse tags for "toblog" tags, and only add those to the blog
 
 config = configparser.ConfigParser()
 config.read('pin_to_hugo_config.ini')
@@ -89,12 +89,14 @@ class DigestPostFromPinboardPost:
         return body
 
 def get_last_blogged_pb_post_date(filepath):
-    "see https://www.scivision.co/python-tail-end-of-file-deque/"
-    fn = Path(filepath)
-    with fn.open('r') as f:
-        last = deque(f,1)[0]
-    post_day = last.split()[0]
-    return post_day
+    """
+    find the date of the most recently posted item in the log file.
+    """
+    loglines = open(filepath,"r").readlines()
+    dates = list(map(lambda d: d.split()[0], loglines))
+    dates.sort()
+    last_post_date = dates[-1]
+    return last_post_date
 
 def write_post(post_content, write_path):
     open(write_path, "w").write(post_content)
