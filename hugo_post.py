@@ -5,11 +5,17 @@ today = datetime.date.today()
 class HugoPost:
     def __init__(self, title, tags, body):
         self.hugo_title = title
-        self.hugo_tags = tags
+        self.input_tags = tags
+        self.hugo_tags = self.filter_tags(self.input_tags)
         self.hugo_body = body
         self.hugo_meta = self.generate_hugo_metadata(self.hugo_title, self.hugo_tags)
         self.hugo_post = self.hugo_meta + "\n" + self.hugo_body
         self.hugo_post_filename = self.hugo_post_filename(self.hugo_title)
+
+    def filter_tags(self, input_tags):
+        filter_list = ["blog/draft", "blog/posted", "scpb", "bitchin", "pa"]
+        filtered_tags = [x for x in input_tags if x not in filter_list]
+        return filtered_tags
 
     def generate_hugo_metadata(self, title, tags):
         meta = "---"

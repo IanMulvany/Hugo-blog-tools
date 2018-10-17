@@ -106,19 +106,12 @@ class BearPost(HugoPost):
         """
         potential_tags = tag_line.split()
         if len(potential_tags) > 0:
-
-            # list of tags to filter out of published posts
-            filter_list = ["blog/draft", "blog/posted", "scpb", "bitchin", "pa"]
             # remove "#" and lowercase the tags
             lstripped_potential_tags = map(lambda x : x.lstrip("#").lower(), potential_tags)
-
-            lstripped_expanded_potential_tags = [x for x in lstripped_potential_tags if x not in filter_list]
-
             # expand out the tags if they have a "/"
-            lstripped_expanded_potential_tags = map(lambda x: x.split("/"), lstripped_expanded_potential_tags)
-
+            lstripped_expanded_potential_tags = map(lambda x: x.split("/"), lstripped_potential_tags)
             # unroll the list of lists
-            tags = [item for sublist in lstripped_expanded_potential_tags for item in sublist]
+            tags = [item for sublist in lstripped_expanded_potential_tags for item in sublist] # no idea what this does
         else:
             tags = []
         return tags
