@@ -18,6 +18,7 @@ from subprocess import Popen, PIPE
 import os
 import sys
 import argparse
+from hugo_post import HugoPost 
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -45,17 +46,15 @@ class cd:
         os.chdir(self.savedPath)
 
 
-class Post:
+class BearPost(HugoPost):
     def __init__(self, post_read_path):
         self.post_read_path = post_read_path
         self.post_content = self.get_post_content(self.post_read_path)
-        self.title = self.get_title(self.post_content)
-        self.tag_line = self.get_tag_line(self.post_content)
-        self.tags = self.get_tags(self.tag_line)
-        self.hugo_meta = self.generate_hugo_metadata(self.title, self.tags)
-        self.hugo_body = self.get_post_body(self.post_content, self.tag_line)
-        self.hugo_post = self.hugo_meta + "\n" + self.hugo_body
-        self.hugo_post_filename = self.hugo_post_filename(self.title)
+        self.post_title = self.get_title(self.post_content)
+        self.post_tag_line = self.get_tag_line(self.post_content)
+        self.post_body = self.get_post_body(self.post_content, self.post_tag_line)
+        self.post_tags = self.get_tags(self.post_tag_line)
+        super().__init__(self.post_title, self.post_tags, self.post_body)
 
     def get_post_content(self, post_read_path):
         content = open(post_read_path).read()
@@ -111,7 +110,7 @@ class Post:
             # list of tags to filter out of published posts
             filter_list = ["blog/draft", "blog/posted", "scpb", "bitchin", "pa"]
             # remove "#" and lowercase the tags
-            lstripped_potential_tags = map(lambda x : x.lstrip("#").lower(), potential_tags
+            lstripped_potential_tags = map(lambda x : x.lstrip("#").lower(), potential_tags)
 
             lstripped_expanded_potential_tags = [x for x in lstripped_potential_tags if x not in filter_list]
 
@@ -132,27 +131,11 @@ class Post:
         post_body = "\n".join(lstripped_lines)
         return post_body
 
-    def generate_hugo_metadata(self, title, tags):
-        meta = "---"
-        meta = meta + "\ntitle: " + title + "\n"
-        meta = meta + "url: " + today.strftime('%Y/%m/%d/') + title.replace(" ","_") + "/\n"
-        meta = meta + "date: " + today.strftime('%Y-%m-%dT%H:%M:%SZ') + "\n"
-        if len(tags) > 0:
-            meta = meta + "categories:"
-            for tag in tags:
-                meta = meta + "\n- " + tag # for loop implicitly adds newline
-        meta = meta + "\n---"
-        return meta
-
-    def hugo_post_filename(self, title):
-        hugo_filename = today.strftime('%Y-%m-%d-') + title.rstrip().replace(" ","-") + ".md"
-        return hugo_filename
-
 def write_post(post, write_path):
     full_path = write_path + post.hugo_post_filename
     open(full_path, "w").write(post.hugo_post)
 
-def build_commit_publish(new_post, post_write_path):
+def build_commit_publish(post, post_write_path):
     commit_path = post_write_path.replace("/Users/ianm/Dropbox","~").replace("/content/post/","")
     with cd(commit_path):
         # we are in ~/Library
@@ -164,7 +147,7 @@ def build_commit_publish(new_post, post_write_path):
 
     # commit the new post
     with cd(commit_path):
-        title = new_post.title
+        title = post.hugo_title
         process = subprocess.call(["git", "commit", "-m","`new post: `"+title], stdout=subprocess.PIPE)
 
     # # push the blog to github
@@ -172,7 +155,7 @@ def build_commit_publish(new_post, post_write_path):
     #    process = subprocess.call(["git", "push"], stdout=subprocess.PIPE
 
 def main(post_read_path, post_write_path):
-    new_post = Post(post_read_path)
+    new_post = BearPost(post_read_path)
     write_post(new_post, post_write_path)
     build_commit_publish(new_post, post_write_path)
 
@@ -183,7 +166,7 @@ if __name__ == "__main__":
     parser.add_argument('-t','--tag_route', help='Tag Routing', required=False)
     args = parser.parse_args()
     post_write_path = "/Users/ianm/Dropbox/blog/partiallyattended/content/post/"
-    main(args.read_path, args.write_path)
+    main(args.read_path, post_write_path) 
 
 
 # DONE create a good test post for testing this against
