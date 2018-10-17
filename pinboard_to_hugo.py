@@ -4,6 +4,10 @@ SAGE tech digest.
 
 restricts search to posts in the last PINBOARD_SEARCH_DAY_RANGE
 
+looks for the following tags to decide on how to route the pinboard post
+
+toblog todigest scpd bitchin
+
 """
 import pinboard
 import datetime
@@ -23,10 +27,13 @@ config.read('pin_to_hugo_config.ini')
 
 path_to_hugo_post_dir = config['DEFAULT']["path_to_hugo_post_dir"]
 path_to_tech_digest_dir = config['DEFAULT']["path_to_tech_digest_dir"]
+path_to_bitchin_dir = config['DEFAULT']["path_to_bitchin_dir"]
+path_to_scpb_dir = config['DEFAULT']["path_to_scpb_dir"]
 pb_logfile = config['DEFAULT']["pb_logfile"]
 pinboard_api_token = config['DEFAULT']["pinboard_api_token"]
 PINBOARD_SEARCH_DAY_RANGE = int(config['DEFAULT']["PINBOARD_SEARCH_DAY_RANGE"])
 today = datetime.date.today()
+
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -60,10 +67,12 @@ class HugoPostFromPinboardPost:
         meta = meta + "\ntitle: " + title + "\n"
         meta = meta + "url: " + today.strftime('%Y/%m/%d/') + title.replace(" ","_") + "/\n"
         meta = meta + "date: " + today.strftime('%Y-%m-%dT%H:%M:%SZ') + "\n"
+        strip_tags = ["bitchin", "toblog", "todigest", "scpb"]
         if len(tags) > 0:
             meta = meta + "categories:"
             for tag in tags:
-                meta = meta + "\n- " + self.sanitise(tag) # for loop implicitly adds newline
+                if tag not in strip_tags:
+                    meta = meta + "\n- " + self.sanitise(tag) # for loop implicitly adds newline
         meta = meta + "\n---"
         return meta
 
@@ -113,8 +122,39 @@ for post in recent:
     if post_day_time > last_post_day_time:
         hugo_post = HugoPostFromPinboardPost(post)
         digest_post = DigestPostFromPinboardPost(post)
-        hugo_path = path_to_hugo_post_dir + "/" + hugo_post.hugo_post_filename
-        digest_path = path_to_tech_digest_dir + "/" + hugo_post.hugo_post_filename
-        write_post(hugo_post.hugo_post, hugo_path)
-        write_post(digest_post.digest_body, digest_path)
-        logger.info(post_day + " " + post.description)
+        tags = post.tags
+        if "toblog" in tags:
+            print(tags)
+            print("route to partiallyattended")
+            hugo_path = path_to_hugo_post_dir + "/" + hugo_post.hugo_post_filename
+            write_post(hugo_post.hugo_post, hugo_path)
+            logger.info(post_day + " " + post.description)
+        if "todigest" in tags:
+            print(tags)
+            print("route to digest")
+            digest_path = path_to_tech_digest_dir + "/" + hugo_post.hugo_post_filename
+            write_post(digest_post.digest_body, digest_path)
+            logger.info(post_day + " " + post.description)
+        if "bitchin" in tags:
+            print(tags)
+            print("route to bitchin")
+            bitchin_path = path_to_bitchin_dir + "/" + hugo_post.hugo_post_filename
+            write_post(hugo_post.hugo_post, bitchin_path)
+            logger.info(post_day + " " + post.description)
+        if "scpb" in tags:
+            print(tags)
+            print("route to scpb")
+            scpb_path = path_to_scpb_dir + "/" + hugo_post.hugo_post_filename
+            write_post(hugo_post.hugo_post, scpb_path)
+            logger.info(post_day + " " + post.description)
+
+    # post_day = str(post.time).split()[0]
+    # post_day_time = time.strptime(post_day, "%Y-%m-%d")
+    # if post_day_time > last_post_day_time:
+    #     hugo_post = HugoPostFromPinboardPost(post)
+    #     digest_post = DigestPostFromPinboardPost(post)
+    #     hugo_path = path_to_hugo_post_dir + "/" + hugo_post.hugo_post_filename
+    #     digest_path = path_to_tech_digest_dir + "/" + hugo_post.hugo_post_filename
+    #     write_post(hugo_post.hugo_post, hugo_path)
+    #     write_post(digest_post.digest_body, digest_path)
+    #     logger.info(post_day + " " + post.description)
