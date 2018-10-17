@@ -147,20 +147,46 @@ def build_commit_publish(post, post_write_path):
     # with cd(commit_path):
     #    process = subprocess.call(["git", "push"], stdout=subprocess.PIPE
 
-def main(post_read_path, post_write_path):
-    new_post = BearPost(post_read_path)
+def create_hugo_post(new_post, post_write_path):
     write_post(new_post, post_write_path)
     build_commit_publish(new_post, post_write_path)
+
+def create_disgest_post(new_post):
+    pass
+
+def create_post_by_tag(new_post):
+    tags = new_post.input_tags
+    logger.info(tags)
+    if "toblog" in tags:
+        post_write_path = "/Users/ianm/Dropbox/blog/partiallyattended/content/post/"
+        create_hugo_post(new_post, post_write_path)
+    if "scpb" in tags:
+        post_write_path = "/Users/ianm/Dropbox/blog/scholarlyproductblog/content/post/"
+        create_hugo_post(new_post, post_write_path)
+    if "bitchin" in tags:
+        post_write_path = "/Users/ianm/Dropbox/blog/scholarly-bitchin/content/post/"
+        create_hugo_post(new_post, post_write_path)
+    if "todigest" in tags:
+        create_disgest_post(new_post)
+
+def route_post(new_post, args): 
+    default_post_write_path = "/Users/ianm/Dropbox/blog/partiallyattended/content/post/"
+    if args.write_path:
+        create_hugo_post(new_post, args.write_path)
+    if args.to_digest:
+        create_post(new_post, args.write_path)
+    if args.tag_route:
+        create_post_by_tag(new_post)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-r','--read_path', help='Read', required=True)
     parser.add_argument('-w','--write_path', help='Write', required=False)
-    parser.add_argument('-t','--tag_route', help='Tag Routing', required=False)
+    parser.add_argument('-d','--to_digest', help='Write', required=False)
+    parser.add_argument('-t','--tag_route', help='Tag Routing', action='store_true') 
     args = parser.parse_args()
-    post_write_path = "/Users/ianm/Dropbox/blog/partiallyattended/content/post/"
-    main(args.read_path, post_write_path) 
-
+    new_post = BearPost(args.read_path)
+    route_post(new_post, args)
 
 # DONE create a good test post for testing this against
 # DONE while workling on this stop posting to github

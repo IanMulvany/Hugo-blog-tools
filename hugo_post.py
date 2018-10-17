@@ -13,7 +13,7 @@ class HugoPost:
         self.hugo_post_filename = self.hugo_post_filename(self.hugo_title)
 
     def filter_tags(self, input_tags):
-        filter_list = ["blog/draft", "blog/posted", "scpb", "bitchin", "pa"]
+        filter_list = ["blog/draft", "blog/posted", "scpb", "bitchin", "toblog", "todigest", "blog", "draft"]
         filtered_tags = [x for x in input_tags if x not in filter_list]
         return filtered_tags
 
