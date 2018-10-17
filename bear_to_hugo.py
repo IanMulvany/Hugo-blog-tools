@@ -17,6 +17,7 @@ import logging
 from subprocess import Popen, PIPE
 import os
 import sys
+import argparse
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -106,15 +107,16 @@ class Post:
         """
         potential_tags = tag_line.split()
         if len(potential_tags) > 0:
-            # remove "#" and lowercase the tags
-            lstripped_potential_tags = map(lambda x : x.lstrip("#").lower(), potential_tags)
 
-            # filter out blog/draft and blog/posted as they are "bear" specific tags
-            lstripped_expanded_potential_tags_f1 = filter(lambda x: x != "blog/posted", lstripped_potential_tags)
-            lstripped_expanded_potential_tags_f2 = filter(lambda x: x != "blog/draft", lstripped_expanded_potential_tags_f1)
+            # list of tags to filter out of published posts
+            filter_list = ["blog/draft", "blog/posted", "scpb", "bitchin", "pa"]
+            # remove "#" and lowercase the tags
+            lstripped_potential_tags = map(lambda x : x.lstrip("#").lower(), potential_tags
+
+            lstripped_expanded_potential_tags = [x for x in lstripped_potential_tags if x not in filter_list]
 
             # expand out the tags if they have a "/"
-            lstripped_expanded_potential_tags = map(lambda x: x.split("/"), lstripped_expanded_potential_tags_f2)
+            lstripped_expanded_potential_tags = map(lambda x: x.split("/"), lstripped_expanded_potential_tags)
 
             # unroll the list of lists
             tags = [item for sublist in lstripped_expanded_potential_tags for item in sublist]
@@ -150,34 +152,47 @@ def write_post(post, write_path):
     full_path = write_path + post.hugo_post_filename
     open(full_path, "w").write(post.hugo_post)
 
-if len(sys.argv) == 1:
-    post_read_path = "/Users/ianm/Dropbox/blog/drafts/scholarly comms product meetup - V2 - announcement.md"
-else:
-    post_read_path = sys.argv[1]
+def build_commit_publish(new_post, post_write_path):
+    commit_path = post_write_path.replace("/Users/ianm/Dropbox","~").replace("/content/post/","")
+    with cd(commit_path):
+        # we are in ~/Library
+        subprocess.call("hugo")
 
-post_write_path = "/Users/ianm/Dropbox/blog/partiallyattended/content/post/"
+    # commit the new content into the local git repo
+    with cd(commit_path):
+        process = subprocess.call(["git", "add", "*"], stdout=subprocess.PIPE)
 
-# create the hugo post object
-new_post = Post(post_read_path)
+    # commit the new post
+    with cd(commit_path):
+        title = new_post.title
+        process = subprocess.call(["git", "commit", "-m","`new post: `"+title], stdout=subprocess.PIPE)
 
-# write the hugo post
-write_post(new_post, post_write_path)
+    # # push the blog to github
+    # with cd(commit_path):
+    #    process = subprocess.call(["git", "push"], stdout=subprocess.PIPE
 
-# try to generate the blog post
-# generate the new blog content
-with cd("~/blog/partiallyattended"):
-    # we are in ~/Library
-    subprocess.call("hugo")
+def main(post_read_path, post_write_path):
+    new_post = Post(post_read_path)
+    write_post(new_post, post_write_path)
+    build_commit_publish(new_post, post_write_path)
 
-# commit the new content into the local git repo
-with cd("~/blog/partiallyattended"):
-    process = subprocess.call(["git", "add", "*"], stdout=subprocess.PIPE)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-r','--read_path', help='Read', required=True)
+    parser.add_argument('-w','--write_path', help='Write', required=False)
+    parser.add_argument('-t','--tag_route', help='Tag Routing', required=False)
+    args = parser.parse_args()
+    post_write_path = "/Users/ianm/Dropbox/blog/partiallyattended/content/post/"
+    main(args.read_path, args.write_path)
 
-# commit the new post
-with cd("~/blog/partiallyattended"):
-    title = new_post.title
-    process = subprocess.call(["git", "commit", "-m","`new post: `"+title], stdout=subprocess.PIPE)
 
-# push the blog to github
-with cd("~/blog/partiallyattended"):
-   process = subprocess.call(["git", "push"], stdout=subprocess.PIPE)
+# DONE create a good test post for testing this against
+# DONE while workling on this stop posting to github
+# DONE create a main function
+# DONE create a function that calls a write to partially attended
+# DONE create a function that calls a write to a given hugo directory
+# DONE create an arg parser to capture destinations
+# TODO filter on tags for destination
+# TODO create a function that does a write to digest
+# TODO unlock the function that writes to github
+# TODO replicate this workflow, but for posting from pinboard
