@@ -20,6 +20,7 @@ import sys
 import argparse
 from hugo_post import HugoPost 
 from digest_automation import new_digest_post_driver
+from markdown2 import Markdown
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -153,7 +154,9 @@ def create_hugo_post(new_post, post_write_path):
     build_commit_publish(new_post, post_write_path)
 
 def create_disgest_post(new_post):
-    new_digest_post_driver.main(new_post.hugo_title, new_post.hugo_post)
+    markdowner = Markdown()
+    html_post_body = markdowner.convert(new_post.hugo_body)
+    new_digest_post_driver.main(new_post.hugo_title, html_post_body)
 
 def create_post_by_tag(new_post):
     tags = new_post.input_tags
