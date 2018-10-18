@@ -63,6 +63,9 @@ def fill_new_post(driver, title=None, body=None):
     body_field = driver.find_element_by_id("content")
     title_field.send_keys(title)
     body_field.send_keys(body)
+    time.sleep(2)
+    publish_button = driver.find_element_by_id("publish")
+    publish_button.click()
 
 
 def main(title, body):

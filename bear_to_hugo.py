@@ -145,9 +145,9 @@ def build_commit_publish(post, post_write_path):
         title = post.hugo_title
         process = subprocess.call(["git", "commit", "-m","`new post: `"+title], stdout=subprocess.PIPE)
 
-    # # push the blog to github
-    # with cd(commit_path):
-    #    process = subprocess.call(["git", "push"], stdout=subprocess.PIPE
+    # push the blog to github
+    with cd(commit_path):
+        process = subprocess.call(["git", "push"], stdout=subprocess.PIPE)
 
 def create_hugo_post(new_post, post_write_path):
     write_post(new_post, post_write_path)
