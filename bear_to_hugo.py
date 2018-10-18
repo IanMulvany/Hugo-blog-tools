@@ -19,6 +19,7 @@ import os
 import sys
 import argparse
 from hugo_post import HugoPost 
+from digest_automation import new_digest_post_driver
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -152,7 +153,7 @@ def create_hugo_post(new_post, post_write_path):
     build_commit_publish(new_post, post_write_path)
 
 def create_disgest_post(new_post):
-    pass
+    new_digest_post_driver.main(new_post.hugo_title, new_post.hugo_post)
 
 def create_post_by_tag(new_post):
     tags = new_post.input_tags

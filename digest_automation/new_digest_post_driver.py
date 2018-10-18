@@ -34,7 +34,7 @@ driver.implicitly_wait(3)
 
 # check out security options at https://techdigest.sagepub.com/wp-admin/admin.php?page=aiowpsec_brute_force&tab=tab1
 
-def login_to_digest():
+def login_to_digest(driver):
     login_field_user = driver.find_element_by_id("user_login")
     login_field_password = driver.find_element_by_id("user_pass")
     login_field_button = driver.find_element_by_id("wp-submit")
@@ -44,7 +44,7 @@ def login_to_digest():
     login_field_button.click()
 
 
-def is_logged_in():
+def is_logged_in(driver):
     driver.get("https://techdigest.sagepub.com/")
     try:
         title_field = driver.find_element_by_id("site-title")
@@ -54,12 +54,12 @@ def is_logged_in():
     return logged_in_state
 
 
-def nav_to_new_post_page():
+def nav_to_new_post_page(driver):
     driver.get("https://techdigest.sagepub.com/wp-admin/post-new.php")
 
 
-def fill_new_post(title=None, body=None):
-    nav_to_new_post_page()
+def fill_new_post(driver, title=None, body=None):
+    nav_to_new_post_page(driver)
     time.sleep(2)
     post_title = title
     post_body = body
@@ -70,11 +70,13 @@ def fill_new_post(title=None, body=None):
 
 
 def main(title, body):
-    if is_logged_in():
+    driver = webdriver.Chrome("./chromedriver")
+    driver.implicitly_wait(3)
+    if is_logged_in(driver):
         logger.info("you are already logged in")
     else:
-        login_to_digest()
-        fill_new_post(title=title, body=body)
+        login_to_digest(driver)
+        fill_new_post(driver, title=title, body=body)
 
 
 if __name__ == "__main__":
