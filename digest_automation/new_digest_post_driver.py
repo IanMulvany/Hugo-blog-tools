@@ -73,6 +73,7 @@ def main(title, body):
     else:
         login_to_digest(driver)
         fill_new_post(driver, title=title, body=body)
+    driver.quit()
 
 
 if __name__ == "__main__":
