@@ -26,11 +26,7 @@ fh.setFormatter(formatter)
 logger.addHandler(handler)
 logger.addHandler(fh)
 logger.setLevel(logging.INFO)
-logger.info("this is an info message")
 
-# create a new Firefox session
-driver = webdriver.Chrome("./chromedriver")
-driver.implicitly_wait(3)
 
 # check out security options at https://techdigest.sagepub.com/wp-admin/admin.php?page=aiowpsec_brute_force&tab=tab1
 
