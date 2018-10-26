@@ -8,7 +8,7 @@ A script to:
 
 Usage
 
-$ python3 transform_to_hugo_format.py path_to_source_post
+$ python3 bear_to_hugo.py -t -r `path to hugo post`
 """
 
 import subprocess
