@@ -22,10 +22,15 @@ import tempfile
 import html2text 
 import tomd 
 import os
+import sys, tempfile, os
+from subprocess import call
+
 # from markdownify import markdownify as md
 
 config = configparser.ConfigParser()
 config.read('pin_lister_config.ini')
+
+EDITOR = os.environ.get('EDITOR','vim') #that easy!
 
 pb_list_logfile = config['DEFAULT']["pb_list_logfile"]
 pinboard_api_token = config['DEFAULT']["pinboard_api_token"]
@@ -84,6 +89,14 @@ class HugoPostFromPinboardPost:
         """
         clean_text = text.replace(":","")
         return clean_text
+
+    def update_post_tags(new_tags):
+        self.hugo_meta = self.generate_hugo_metadata(self.title, new_tags)
+        self.hugo_post = self.hugo_meta + "\n" + self.hugo_body
+
+    def update_post_body(new_body):
+        self.hugo_body = self.generate_hugo_body(new_body, pinboard_post.url)
+        self.hugo_post = self.hugo_meta + "\n" + self.hugo_body
 
 class DigestPostFromPinboardPost:
     def __init__(self, pinboard_post):
@@ -150,6 +163,27 @@ def preview_hugo_post(selected_post):
     print(hugo_post)
     print("")
 
+def update_tags(tags):
+    print("about to edit tags")
+    print(tags)
+    initial_message = "\n".join(tags)
+    new_tags = capture_input(initial_message)
+    print(new_tags)
+
+
+def capture_input(initial_message):
+    with tempfile.NamedTemporaryFile(suffix=".tmp") as tf:
+        tf.write(initial_message.encode())
+        tf.flush()
+        call([EDITOR,'+set backupcopy=yes', tf.name])
+
+        # do the parsing with `tf` using regular File operations.
+        # for instance:
+        tf.seek(0)
+
+        edited_message = tf.read()
+        return (edited_message.decode("utf-8"))
+
 
 pb = pinboard.Pinboard(pinboard_api_token)
 days_ago = datetime.datetime.now() -  datetime.timedelta(days=PINBOARD_SEARCH_DAY_RANGE)
@@ -182,7 +216,8 @@ while status != "q":
         if process_option == "w":
             preview_in_marked(selected_post.url)
         if process_option == "e":
-            print("about to edit tags")
+            update_tags(selected_post.tags)
+
 
     if process_option == "n": 
         selected_post = select_post(recent)
