@@ -173,7 +173,7 @@ while status != "q":
             print(selected_post.tags)
         if process_option == "h":
             hugo_post = HugoPostFromPinboardPost(selected_post)
-            print(hugo_post)
+            print(hugo_post.hugo_post)
         if process_option == "w":
             preview_in_marked(selected_post.url)
         if process_option == "e":
