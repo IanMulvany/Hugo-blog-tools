@@ -144,6 +144,12 @@ def select_post(post_list):
     post = post_list[int(num)]
     return post 
 
+def preview_hugo_post(selected_post):
+    hugo_post = HugoPostFromPinboardPost(selected_post).hugo_post
+    print("")
+    print(hugo_post)
+    print("")
+
 
 pb = pinboard.Pinboard(pinboard_api_token)
 days_ago = datetime.datetime.now() -  datetime.timedelta(days=PINBOARD_SEARCH_DAY_RANGE)
@@ -172,8 +178,7 @@ while status != "q":
         if process_option == "t":
             print(selected_post.tags)
         if process_option == "h":
-            hugo_post = HugoPostFromPinboardPost(selected_post)
-            print(hugo_post.hugo_post)
+            preview_hugo_post(selected_post)
         if process_option == "w":
             preview_in_marked(selected_post.url)
         if process_option == "e":
