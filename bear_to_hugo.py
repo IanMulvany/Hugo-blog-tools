@@ -131,7 +131,7 @@ def write_post(post, write_path):
     open(full_path, "w").write(post.hugo_post)
 
 def build_commit_publish(post, post_write_path):
-    commit_path = post_write_path.replace("/Users/ianm/Dropbox","~").replace("/content/post/","")
+    commit_path = post_write_path.replace("/Users/ianm/Documents","~").replace("/content/post/","")
     with cd(commit_path):
         # we are in ~/Library
         subprocess.call("hugo")
@@ -162,19 +162,19 @@ def create_post_by_tag(new_post):
     tags = new_post.input_tags
     logger.info(tags)
     if "toblog" in tags:
-        post_write_path = "/Users/ianm/Dropbox/blog/partiallyattended/content/post/"
+        post_write_path = "/Users/ianm/Documents/blog/partiallyattended/content/post/"
         create_hugo_post(new_post, post_write_path)
     if "scpb" in tags:
-        post_write_path = "/Users/ianm/Dropbox/blog/scholarlyproductblog/content/post/"
+        post_write_path = "/Users/ianm/Documents/blog/scholarlyproductblog/content/post/"
         create_hugo_post(new_post, post_write_path)
     if "bitchin" in tags:
-        post_write_path = "/Users/ianm/Dropbox/blog/scholarly-bitchin/content/post/"
+        post_write_path = "/Users/ianm/Documents/blog/scholarly-bitchin/content/post/"
         create_hugo_post(new_post, post_write_path)
     if "todigest" in tags:
         create_disgest_post(new_post)
 
 def route_post(new_post, args): 
-    default_post_write_path = "/Users/ianm/Dropbox/blog/partiallyattended/content/post/"
+    default_post_write_path = "/Users/ianm/Documents/blog/partiallyattended/content/post/"
     if args.write_path:
         create_hugo_post(new_post, args.write_path)
     if args.to_digest:
