@@ -112,7 +112,11 @@ def create_post_by_tag(new_post):
         post_write_path = blog_root_path + scholarlyproductblog_content_path 
         create_hugo_post(new_post, post_write_path)
     if "todigest" in tags:
-        create_disgest_post(new_post)
+    # if "bitchin" in tags:
+    #     post_write_path = "/Users/ianm/Documents/blog/scholarly-bitchin/content/post/"
+    #     create_hugo_post(new_post, post_write_path)
+    # if "todigest" in tags:
+    #     create_disgest_post(new_post)
 
 def route_post(new_post, args): 
     default_post_write_path = blog_root_path + partiallyattended_content_path
