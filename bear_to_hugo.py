@@ -135,7 +135,8 @@ if __name__ == "__main__":
     parser.add_argument('-t','--tag_route', help='Tag Routing', action='store_true') 
     args = parser.parse_args()
     new_post = BearPost(args.read_path)
-    route_post(new_post, args)
+    new_hg_post = HugoPost(new_post)
+    route_post(new_hg_post, args)
 
 # DONE create a good test post for testing this against
 # DONE while workling on this stop posting to github
