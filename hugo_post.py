@@ -10,12 +10,6 @@ class HugoPost:
         self.hugo_body = body
         self.hugo_meta = self.generate_hugo_metadata(self.hugo_title, self.hugo_tags)
         self.hugo_post = self.hugo_meta + "\n" + self.hugo_body
-        self.hugo_post_filename = self.hugo_post_filename(self.hugo_title)
-
-    def filter_tags(self, input_tags):
-        filter_list = ["blog/draft", "blog/posted", "scpb", "bitchin", "toblog", "todigest", "blog", "draft", "posted"]
-        filtered_tags = [x for x in input_tags if x not in filter_list]
-        return filtered_tags
 
     @staticmethod
     def generate_hugo_metadata(title, tags):

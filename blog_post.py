@@ -13,6 +13,7 @@ class BlogPost:
         self.body = body
 
     def filter_tags(self, input_tags):
+        #TODO: make the filtered tag list paramaterised. 
         filter_list = ["blog/draft", "blog/posted", "scpb", "bitchin", "toblog", "todigest", "blog", "draft", "posted"]
         filtered_tags = [x for x in input_tags if x not in filter_list]
         return filtered_tags
