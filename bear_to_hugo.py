@@ -84,7 +84,7 @@ def build_commit_publish(post, post_write_path):
 
     # commit the new post
     with cd(commit_path):
-        title = post.hugo_title
+        title = post.title
         print("committing changes to git")
         process = subprocess.call(["git", "commit", "-m","`new post: `"+title], stdout=subprocess.PIPE)
 
@@ -100,7 +100,7 @@ def create_hugo_post(new_post, post_write_path):
 def create_disgest_post(new_post):
     markdowner = Markdown()
     html_post_body = markdowner.convert(new_post.hugo_body)
-    new_digest_post_driver.main(new_post.hugo_title, html_post_body)
+    new_digest_post_driver.main(new_post.title, html_post_body)
 
 def create_post_by_tag(new_post):
     tags = new_post.input_tags
