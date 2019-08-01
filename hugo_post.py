@@ -1,4 +1,3 @@
-
 from blog_post import BlogPost
 import datetime
 today = datetime.date.today()
@@ -14,6 +13,9 @@ class HugoPost(BlogPost):
 
     @staticmethod
     def generate_hugo_metadata(title, tags):
+        """
+        create metadata for a hugo blog post.
+        """
         meta = "---"
         meta = meta + "\ntitle: " + title + "\n"
         meta = meta + "url: " + today.strftime('%Y/%m/%d/') + title.replace(" ", "_") + "/\n"
