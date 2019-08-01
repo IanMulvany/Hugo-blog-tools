@@ -148,21 +148,25 @@ def build_commit_publish(post, post_write_path):
     print(post_write_path)
     commit_path = post_write_path.replace(root_path,"~/").replace("/content/post/","")
     print(commit_path)
+    print("running hugo")
     with cd(commit_path):
         # we are in ~/Library
         subprocess.call("hugo")
 
     # commit the new content into the local git repo
     with cd(commit_path):
+        print("adding changes to git")
         process = subprocess.call(["git", "add", "*"], stdout=subprocess.PIPE)
 
     # commit the new post
     with cd(commit_path):
         title = post.hugo_title
+        print("committing changes to git")
         process = subprocess.call(["git", "commit", "-m","`new post: `"+title], stdout=subprocess.PIPE)
 
     # push the blog to github
     with cd(commit_path):
+        print("pushing changes to github")
         process = subprocess.call(["git", "push"], stdout=subprocess.PIPE)
 
 def create_hugo_post(new_post, post_write_path):
