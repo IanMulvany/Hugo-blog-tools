@@ -21,6 +21,7 @@ import argparse
 from hugo_post import HugoPost 
 from digest_automation import new_digest_post_driver
 from markdown2 import Markdown
+import configparser
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -33,6 +34,12 @@ logger.setLevel(logging.INFO)
 today = datetime.date.today()
 
 
+config = configparser.ConfigParser()
+config.read('bear_to_hugo_config.ini')
+root_path = config['DEFAULT']["root_path"]
+blog_root_path = config['DEFAULT']["blog_root_path"]
+partiallyattended_content_path = config['DEFAULT']["partiallyattended_content_path"]
+scholarlyproductblog_content_path = config['DEFAULT']["scholarlyproductblog_content_path"]
 class cd:
     """Context manager for changing the current working directory
     see https://stackoverflow.com/questions/431684/how-do-i-cd-in-python
@@ -131,7 +138,9 @@ def write_post(post, write_path):
     open(full_path, "w").write(post.hugo_post)
 
 def build_commit_publish(post, post_write_path):
-    commit_path = post_write_path.replace("/Users/ianm/Documents","~").replace("/content/post/","")
+    print(post_write_path)
+    commit_path = post_write_path.replace(root_path,"~/").replace("/content/post/","")
+    print(commit_path)
     with cd(commit_path):
         # we are in ~/Library
         subprocess.call("hugo")
@@ -162,19 +171,16 @@ def create_post_by_tag(new_post):
     tags = new_post.input_tags
     logger.info(tags)
     if "toblog" in tags:
-        post_write_path = "/Users/ianm/Documents/blog/partiallyattended/content/post/"
+        post_write_path = blog_root_path + partiallyattended_content_path
         create_hugo_post(new_post, post_write_path)
     if "scpb" in tags:
-        post_write_path = "/Users/ianm/Documents/blog/scholarlyproductblog/content/post/"
-        create_hugo_post(new_post, post_write_path)
-    if "bitchin" in tags:
-        post_write_path = "/Users/ianm/Documents/blog/scholarly-bitchin/content/post/"
+        post_write_path = blog_root_path + scholarlyproductblog_content_path 
         create_hugo_post(new_post, post_write_path)
     if "todigest" in tags:
         create_disgest_post(new_post)
 
 def route_post(new_post, args): 
-    default_post_write_path = "/Users/ianm/Documents/blog/partiallyattended/content/post/"
+    default_post_write_path = blog_root_path + partiallyattended_content_path
     if args.write_path:
         create_hugo_post(new_post, args.write_path)
     if args.to_digest:
