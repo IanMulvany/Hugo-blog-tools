@@ -20,7 +20,7 @@ class HugoPost:
     def generate_hugo_metadata(self, title, tags):
         meta = "---"
         meta = meta + "\ntitle: " + title + "\n"
-        meta = meta + "url: " + today.strftime('%Y/%m/%d/') + title.replace(" ","_") + "/\n"
+        meta = meta + "url: " + today.strftime('%Y/%m/%d/') + title.replace(" ", "_") + "/\n"
         meta = meta + "date: " + today.strftime('%Y-%m-%dT%H:%M:%SZ') + "\n"
         if tags:
             meta = meta + "categories:"
