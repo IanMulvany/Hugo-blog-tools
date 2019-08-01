@@ -17,7 +17,8 @@ class HugoPost:
         filtered_tags = [x for x in input_tags if x not in filter_list]
         return filtered_tags
 
-    def generate_hugo_metadata(self, title, tags):
+    @staticmethod
+    def generate_hugo_metadata(title, tags):
         meta = "---"
         meta = meta + "\ntitle: " + title + "\n"
         meta = meta + "url: " + today.strftime('%Y/%m/%d/') + title.replace(" ", "_") + "/\n"
