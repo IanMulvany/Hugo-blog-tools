@@ -20,6 +20,7 @@ import sys
 import argparse
 from bear_post import BearPost
 from hugo_post import HugoPost
+#TODO: fix path references in creating Tech Digest post - currently broken due to changes in wordpress
 from digest_automation import new_digest_post_driver
 from markdown2 import Markdown
 import configparser
@@ -41,6 +42,10 @@ root_path = config['DEFAULT']["root_path"]
 blog_root_path = config['DEFAULT']["blog_root_path"]
 partiallyattended_content_path = config['DEFAULT']["partiallyattended_content_path"]
 scholarlyproductblog_content_path = config['DEFAULT']["scholarlyproductblog_content_path"]
+
+
+#TODO: finish refactoring the calls to paths for this script form a config file 
+
 class cd:
     """Context manager for changing the current working directory
     see https://stackoverflow.com/questions/431684/how-do-i-cd-in-python
@@ -111,7 +116,6 @@ def create_post_by_tag(new_post):
     if "scpb" in tags:
         post_write_path = blog_root_path + scholarlyproductblog_content_path 
         create_hugo_post(new_post, post_write_path)
-    if "todigest" in tags:
     # if "bitchin" in tags:
     #     post_write_path = "/Users/ianm/Documents/blog/scholarly-bitchin/content/post/"
     #     create_hugo_post(new_post, post_write_path)
