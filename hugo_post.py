@@ -22,7 +22,7 @@ class HugoPost:
         meta = meta + "\ntitle: " + title + "\n"
         meta = meta + "url: " + today.strftime('%Y/%m/%d/') + title.replace(" ","_") + "/\n"
         meta = meta + "date: " + today.strftime('%Y-%m-%dT%H:%M:%SZ') + "\n"
-        if len(tags) > 0:
+        if tags:
             meta = meta + "categories:"
             for tag in tags:
                 meta = meta + "\n- " + tag # for loop implicitly adds newline
