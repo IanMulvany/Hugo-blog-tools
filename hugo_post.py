@@ -1,4 +1,5 @@
 
+from blog_post import BlogPost
 import datetime
 today = datetime.date.today()
 
