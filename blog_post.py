@@ -1,6 +1,8 @@
 import datetime
 today = datetime.date.today()
 
+
+
 class BlogPost:
     """
     class to contain the most generic content
@@ -18,3 +20,5 @@ class BlogPost:
         filtered_tags = [x for x in input_tags if x not in filter_list]
         return filtered_tags
 
+    def print_blog_info(self):
+        print("the title is" + self.title)
