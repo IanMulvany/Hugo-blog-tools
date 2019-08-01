@@ -138,6 +138,13 @@ def write_post(post, write_path):
     open(full_path, "w").write(post.hugo_post)
 
 def build_commit_publish(post, post_write_path):
+    """
+    takes a path like 
+    /Users/ianm/Documents/blog/partiallyattended/content/post/"
+
+    and turns it into something like 
+    ~/
+    """
     print(post_write_path)
     commit_path = post_write_path.replace(root_path,"~/").replace("/content/post/","")
     print(commit_path)
