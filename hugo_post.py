@@ -30,5 +30,5 @@ class HugoPost:
         return meta
 
     def hugo_post_filename(self, title):
-        hugo_filename = today.strftime('%Y-%m-%d-') + title.rstrip().replace(" ","-") + ".md"
+        hugo_filename = today.strftime('%Y-%m-%d-') + title.rstrip().replace(" ", "-") + ".md"
         return hugo_filename
